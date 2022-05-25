@@ -1,0 +1,501 @@
+'''
+    This is a Project on Library Issue System useing Tkinter   
+'''
+#=========================MODULES================================
+from tkinter import *
+from tkinter import ttk
+import random
+from datetime import datetime
+import tkinter.messagebox
+import mysql.connector as ms
+import datetime
+#==========================ROOT==================================
+root=Tk()
+root.geometry("1350x850")
+root.title("LIBRARY ISSUE SYSTEM")
+#========================STARTING==========================
+def main():
+    '''
+        This is the First Page of the Screen  
+    '''
+    Pass=StringVar()
+    #====================FRAMES==================================
+    FullFrame = Frame(root)
+    FullFrame.grid()
+    TopFrame = Frame(FullFrame, width=1350,height=30,bd=2,relief=RIDGE)
+    TopFrame.pack(side=TOP)
+    AskFrame = Frame(FullFrame, width=1350,height=10,bd=1,relief=RIDGE)
+    AskFrame.pack(side= TOP)
+    ButtonFrame1 = Frame(FullFrame, width=1350,height=10,relief=RIDGE)
+    ButtonFrame1.pack(side=TOP)
+    #==================LABELS====================================
+    Title = Label(TopFrame,width =39,font=("arial",40,"bold"),text='\tWelcome To Library\t')
+    Title.grid()
+    Ask = Label(AskFrame,width =39,font=("arial",20,"bold"),text='\tEnter The PassWord Below\t')
+    Ask.grid(row=0,column=0)
+    #================PASSWORD====================================
+    EnterPass = Entry(AskFrame,font=('arial',12,'bold'),width= 25,textvariable = Pass,show="\u2022")
+    EnterPass.grid(row=1,column=0)
+    def PassWd():
+        '''
+            It confirms our Password.
+        '''
+        if Pass.get()=="sar123":
+            page()
+        else:
+            Pass.set("")
+            ErrorPass= tkinter.messagebox.showinfo("Library Management system","Incorrect PassWord !")
+    def iCut():
+        '''
+            It will close the whole window 
+        '''
+        root.destroy()    
+    def page():
+        '''
+            This is the actual place where issue takes place 
+        '''
+        #=======================DESTROYING==================
+        FullFrame.destroy()
+        TopFrame.destroy()
+        AskFrame.destroy()
+        ButtonFrame1.destroy()
+        #==========================REAL  PAGE START=============
+        MType=StringVar()
+        Ref=StringVar()
+        Title=StringVar()
+        Firstname=StringVar()
+        Surname=StringVar()
+        Address1=StringVar()
+        Address2=StringVar()
+        PostCode=StringVar()
+        MobileNo=StringVar()
+        BookID=StringVar()
+        BookTitle=StringVar()
+        BookType=StringVar()
+        Author=StringVar()
+        DateBorrowed=StringVar()
+        DateDue=StringVar()
+        SellingPrice=StringVar()
+        LateReturnFine=StringVar()
+        DateOverDue=StringVar()
+        DaysOnLoan=StringVar()
+        Priscription=StringVar()
+        def iReset():
+            '''
+                This will erase the existing data to write freshly 
+            '''
+            MType.set("")
+            Ref.set("")
+            Title.set("")
+            Firstname.set("")
+            Surname.set("")
+            Address1.set("")
+            Address2.set("")
+            PostCode.set("")
+            MobileNo.set("")
+            BookID.set("")
+            BookTitle.set("")
+            BookType.set("")
+            Author.set("")
+            DateBorrowed.set("")
+            DateDue.set("")
+            SellingPrice.set("")
+            LateReturnFine.set("")
+            DateOverDue.set("")
+            DaysOnLoan.set("")
+            Priscription.set("")
+            txtFrameDetail.delete("1.0",END)        
+        def iExit():
+            '''
+                It will close the whole frame 
+            '''
+            iExit = tkinter.messagebox.askyesno("Library Management system","conferm if You want To Exit")
+            if iExit>0:
+                root.destroy()
+                return
+        def BackPage():
+            '''
+                It will return to the main page
+            '''
+            MainFrame.destroy()
+            TitleFrame.destroy()
+            ButtomFrame.destroy()
+            DataFrame.destroy()
+            main()
+          #========================CONNECTOR===========================
+        def Save():
+            '''
+                It will save all the data to the mysql database
+            '''
+            if "" not in [MType.get(),Ref.get(),Title.get(),Firstname.get(),Surname.get(),Address1.get(),
+                      Address2.get(),PostCode.get(),MobileNo.get(),BookID.get(),BookTitle.get(),
+                      Author.get(),DateBorrowed.get(),DateDue.get(),DaysOnLoan.get(),LateReturnFine.get(),
+                      DateOverDue.get(),SellingPrice.get()]:
+                save = tkinter.messagebox.askyesno("Library Management system","Do you want to save?")
+                if save>0:
+                    md=ms.connect(host='localhost',user='root',passwd='1234',database='lib')
+                    mcr=md.cursor()
+                    str="insert into libraryissue values('{}','{}','{}','{}','{}','{}','{}','{}','{}',\
+        '{}','{}','{}',\
+        '{}','{}','{}',\
+        '{}','{}','{}','\
+        {}','{}')".format(MType.get(),Ref.get(),Title.get(),Firstname.get(),Surname.get(),Address1.get(),
+                          Address2.get(),PostCode.get(),MobileNo.get(),BookID.get(),BookTitle.get(),BookType.get(),
+                          Author.get(),DateBorrowed.get(),DateDue.get(),DaysOnLoan.get(),LateReturnFine.get(),
+                          DateOverDue.get(),SellingPrice.get(),Priscription.get())
+                    mcr.execute(str)
+                    md.commit()
+                    md.close()        
+        #========================FRAMES==============================
+        MainFrame = Frame(root)
+        MainFrame.grid()
+        
+        TitleFrame = Frame(MainFrame, width=1350,height=30,relief=RIDGE)
+        TitleFrame.pack(side=TOP)        
+        lblTitle = Label (TitleFrame,width=39,font=("arial",40,"bold"),text='\t Library Issue System\t')
+        lblTitle.grid()
+        
+        ButtomFrame = Frame(MainFrame,bd=3,width=1350,height=50,relief=RIDGE)
+        ButtomFrame.pack(side=BOTTOM)
+        
+        DataFrame = Frame(MainFrame,bd=3,width=1300,height=400,relief=RIDGE)
+        DataFrame.pack(side=BOTTOM)
+        
+        DataFrameLEFT = LabelFrame(DataFrame,bd=3,width=800,height=300,relief=RIDGE,font=("arial",12,"bold"),text='Library Membership info:')
+        DataFrameLEFT.pack(side=LEFT)
+        
+        DataFrameRIGHT = LabelFrame(DataFrame,bd=3,width=450,height=300,relief=RIDGE,font=("arial",12,"bold"),text='Book Details :')
+        DataFrameRIGHT.pack(side=RIGHT)
+        #=========================WIGETS==============================
+        lblMemberType = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Member Type :')
+        lblMemberType.grid(row=0,column=0,sticky=W)
+        
+        cboMemberType = ttk.Combobox(DataFrameLEFT,font=('arial',12,'bold'),state='readonly',width=23,textvariable = MType)
+        cboMemberType['value']=('','Student','Lecturer','Admin','Staff')
+        cboMemberType.current(0)
+        cboMemberType.grid(row=0,column=1)
+        
+        lblBookID = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Book ID :')
+        lblBookID.grid(row=0,column=2,sticky=W)
+        txtBookID = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = BookID)
+        txtBookID.grid(row=0,column=3)
+        
+        lblRef = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Reference No. :')
+        lblRef.grid(row=1,column=0,sticky=W)
+        txtRef = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = Ref)
+        txtRef.grid(row=1,column=1)
+        
+        lblBookTitle = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Book Title :')
+        lblBookTitle.grid(row=1,column=2,sticky=W)
+        txtBookTitle = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = BookTitle)
+        txtBookTitle.grid(row=1,column=3)
+        
+        lblTitle = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Title :')
+        lblTitle.grid(row=2,column=0,sticky=W)
+        
+        cboTitle= ttk.Combobox(DataFrameLEFT,font=('arial',12,'bold'),state='readonly',width=23,textvariable = Title)
+        cboTitle['value']=('','Mr.','Miss.','Mrs.','Dr.','Cap.')
+        cboTitle.current(0)
+        cboTitle.grid(row=2,column=1)
+        
+        lblAuthor = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Author :')
+        lblAuthor.grid(row=2,column=2,sticky=W)
+        txtAuthor = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = Author)
+        txtAuthor.grid(row=2,column=3)
+        
+        lblFirstname = Label(DataFrameLEFT,font=('arial',12,'bold'),text='First Name :')
+        lblFirstname.grid(row=3,column=0,sticky=W)
+        txtFirstname = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = Firstname)
+        txtFirstname.grid(row=3,column=1)
+        
+        lblDateBorrowed = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Date Borrowed :')
+        lblDateBorrowed.grid(row=3,column=2,sticky=W)
+        txtDateBorrowed = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable = DateBorrowed)
+        txtDateBorrowed.grid(row=3,column=3)
+        
+        lblSurname = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Surname :')
+        lblSurname.grid(row=4,column=0,sticky=W)
+        txtSurname = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =Surname)
+        txtSurname.grid(row=4,column=1)
+        
+        lblDateDue = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Date Due :')
+        lblDateDue.grid(row=4,column=2,sticky=W)
+        txtDateDue = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =DateDue)
+        txtDateDue.grid(row=4,column=3)
+        
+        lblAddress1 = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Address 1:')
+        lblAddress1.grid(row=5,column=0,sticky=W)
+        txtAddress1 = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =Address1)
+        txtAddress1.grid(row=5,column=1)
+        
+        lblDaysOnLoan = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Days On Loan :')
+        lblDaysOnLoan.grid(row=5,column=2,sticky=W)
+        txtDaysOnLoan = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =DaysOnLoan)
+        txtDaysOnLoan.grid(row=5,column=3)
+        
+        lblAddress2 = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Address 2:')
+        lblAddress2.grid(row=6,column=0,sticky=W)
+        txtAddress2 = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =Address2)
+        txtAddress2.grid(row=6,column=1)
+        
+        lblLateReturnFine = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Late Return Fine :')
+        lblLateReturnFine.grid(row=6,column=2,sticky=W)
+        txtLateReturnFine = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =LateReturnFine)
+        txtLateReturnFine.grid(row=6,column=3)
+        
+        lblPostCode = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Post Code :')
+        lblPostCode.grid(row=7,column=0,sticky=W)
+        txtPostCode = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =PostCode)
+        txtPostCode.grid(row=7,column=1)
+        
+        lblDateOverDue = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Date Over Due :')
+        lblDateOverDue.grid(row=7,column=2,sticky=W)
+        txtDateOverDue = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =DateOverDue)
+        txtDateOverDue.grid(row=7,column=3)
+        
+        lblMobileNo = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Mobile No. :')
+        lblMobileNo.grid(row=8,column=0,sticky=W)
+        txtMobileNo = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =MobileNo)
+        txtMobileNo.grid(row=8,column=1)
+        
+        lblSellingPrice = Label(DataFrameLEFT,font=('arial',12,'bold'),text='Selling Price :')
+        lblSellingPrice.grid(row=8,column=2,sticky=W)
+        txtSellingPrice = Entry(DataFrameLEFT,font=('arial',12,'bold'),width= 25,textvariable =SellingPrice)
+        txtSellingPrice.grid(row=8,column=3)
+        #=========================WIDGET=====F2=================
+        txtFrameDetail = Text(DataFrameRIGHT,font=('arial',12,'bold'),width= 32,height=13)
+        txtFrameDetail.grid(row=0,column=2)
+        #======================lISTofBooks========================
+        scrollbar = Scrollbar(DataFrameRIGHT)
+        scrollbar.grid(row=0,column=1,sticky='ns')
+        def SelectedBook(evt):
+            '''
+                Selection of books takes place here with required details
+            '''
+            value = str(booklist.get(booklist.curselection()))
+            w = value
+            if w == 'cinderella':
+                BookID.set("ISBN 23456708765")
+                BookTitle.set("The Great")
+                Author.set("Paul Parker")
+                LateReturnFine.set("Rs. 100")
+                SellingPrice.set("Rs. 500")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")                
+                iReceipt()
+            elif w == 'consept of physics':
+                BookID.set("ISBN 9788177091878")
+                BookTitle.set("Physics")
+                Author.set("H.C Verma")
+                LateReturnFine.set("Rs. 50")
+                SellingPrice.set("Rs. 350")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")                            
+                iReceipt()
+            elif w == 'S L Arora':
+                BookID.set("ISBN 15456708665")
+                BookTitle.set("Physics Class 12")
+                Author.set("S L Arora")
+                LateReturnFine.set("Rs. 150")
+                SellingPrice.set("Rs. 995")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+                
+            elif w == 'Organic 12':
+                BookID.set("ISBN 12348908665")
+                BookTitle.set("Organic Chmistry")
+                Author.set("J D LEE")
+                LateReturnFine.set("Rs. 150")
+                SellingPrice.set("Rs. 1050")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+                
+            elif w == 'Physical Chemistry':
+                BookID.set("ISBN 12569999665")
+                BookTitle.set("Physical Chemistry")
+                Author.set("R D Verma")
+                LateReturnFine.set("Rs. 150")
+                SellingPrice.set("Rs. 885")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+                
+            elif w == 'Learning With JAVA':
+                BookID.set("ISBN 98749999665")
+                BookTitle.set("JAVA")
+                Author.set("Ronit Roy")
+                LateReturnFine.set("Rs. 150")
+                SellingPrice.set("Rs. 555")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+                
+            elif w == 'Hindi Stories':
+                BookID.set("ISBN 63958599665")
+                BookTitle.set("Raja Rani")
+                Author.set("J P Singh")
+                LateReturnFine.set("Rs. 50")
+                SellingPrice.set("Rs. 250")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+                
+            elif w == 'Aribian Nights':
+                BookID.set("ISBN 85238599665")
+                BookTitle.set("Mystry")
+                Author.set("J K Rowling")
+                LateReturnFine.set("Rs. 100")
+                SellingPrice.set("Rs. 300")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+
+                
+            elif w == 'Modern ABC':
+                BookID.set("ISBN 75241254665")
+                BookTitle.set("Class 12 Chemystry")
+                Author.set("S P Jahur")
+                LateReturnFine.set("Rs. 200")
+                SellingPrice.set("Rs. 1050")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+
+                
+            elif w == 'Aladdin':
+                BookID.set("ISBN 55242541665")
+                BookTitle.set("Flying Carpet")
+                Author.set("Robin")
+                LateReturnFine.set("Rs. 25")
+                SellingPrice.set("Rs. 55")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")
+                iReceipt()
+
+                
+            elif w == 'Cengage':
+                BookID.set("ISBN 65392541665")
+                BookTitle.set("JEE MAINS And ADVANCE")
+                Author.set("D K")
+                LateReturnFine.set("Rs. 25")
+                SellingPrice.set("Rs. 55")
+                DaysOnLoan.set(14)
+
+                d1=datetime.date.today()
+                d2=datetime.timedelta(days=14)
+                d3= d1+d2
+                DateBorrowed.set(d1)
+                DateDue.set(d3)
+                DateOverDue.set("No")                
+                iReceipt()
+
+        ListOfBook = ['cinderella','consept of physics','S L Arora',
+                      'Organic 12','Physical Chemistry','Learning With JAVA',
+                      'Hindi Stories','Aribian Nights',
+                      'Modern ABC','Aladdin','Cengage']
+
+        booklist = Listbox(DataFrameRIGHT,width=20,height=12,font=("arial",12,"bold"))
+        booklist.bind('<<ListboxSelect>>',SelectedBook)
+        booklist.grid(row=0,column=0)
+        scrollbar.config(command=booklist.yview)
+
+        for items in ListOfBook:
+            booklist.insert(END,items)
+        #=============================BUTTONS======================       
+        btnReset=Button(ButtomFrame,text='Reset',font=('arial',12,'bold'),width=30,bd=4,command = iReset )
+        btnReset.grid(row=0,column=1)
+        
+        btnExit=Button(ButtomFrame,text='Exit',font=('arial',12,'bold'),width=30,bd=4,command = iExit)
+        btnExit.grid(row=0,column=2)
+        
+        btnBack=Button(TitleFrame,text='Back',font=('arial',12,'bold'),width=10,bd=4,command =BackPage )
+        btnBack.place(x=0,y=0)
+        
+        btnSave=Button(ButtomFrame,text='Save',font=('arial',12,'bold'),width=30,bd=4,command = Save)
+        btnSave.grid(row=0,column=3)      
+        def iReceipt():
+            txtFrameDetail.insert(END,'Member Type : \t\t'+ MType.get()+'\n' )
+            txtFrameDetail.insert(END,'Reference No. : \t\t'+ Ref.get()+'\n')
+            txtFrameDetail.insert(END,'Title: \t\t'+ Title.get()+'\n')
+            txtFrameDetail.insert(END,'First Name: \t\t'+ Firstname.get()+'\n')
+            txtFrameDetail.insert(END,'Surname: \t\t'+Surname.get()+'\n')
+            txtFrameDetail.insert(END,'Address 1: \t\t'+ Address1.get()+'\n')
+            txtFrameDetail.insert(END,'Address 2 \t\t'+ Address2.get()+'\n')
+            txtFrameDetail.insert(END,'Post Code \t\t'+ PostCode.get()+'\n')
+            txtFrameDetail.insert(END,'Book title : \t\t'+ BookTitle.get()+'\n')
+            txtFrameDetail.insert(END,'Borrow Date :\t\t'+DateBorrowed.get()+'\n')
+            txtFrameDetail.insert(END,'Day Of Loan :\t\t'+ DaysOnLoan.get()+'\n')
+            txtFrameDetail.insert(END,'Mobile No. :\t\t'+MobileNo.get()+'\n')
+            txtFrameDetail.insert(END,'Book ID :\t\t'+BookID.get()+'\n')
+            txtFrameDetail.insert(END,'Author : \t\t'+ Author.get()+'\n')            
+      #========================BUTTONS=============================
+    btnIssu=Button(ButtonFrame1,text='Enter',font=('arial',12,'bold'),width=30,bd=4,command= PassWd )
+    btnIssu.grid(row=0,column=1)
+    
+    btnCut=Button(TopFrame,text='X',font=('arial',12,'bold'),width=5,bd=4,bg='red',command = iCut)
+    btnCut.place(x=1190,y=0)
+
+main() 
+root.mainloop()
